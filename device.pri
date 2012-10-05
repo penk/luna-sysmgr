@@ -81,7 +81,7 @@ contains(MACHINE_NAME, "pyramid") {
 	DEFINES += MACHINE_PYRAMID
 	CONFIG_BUILD += opengl 
 	CONFIG_BUILD += haptics
-    LIBS += -lqpalm
+LIBS += -lqpalm
 }
 contains(MACHINE_NAME, "qemux86") {
     DEFINES += MACHINE_QEMUX86
@@ -104,6 +104,13 @@ contains(MACHINE_NAME, "qemuarm") {
     LIBS += -Wl,-rpath $$(STAGING_LIBDIR)
     SOURCES += SoundPlayerDummy.cpp
     HEADERS += SoundPlayerDummy.h
+}
+contains(MACHINE_NAME, "tuna") {
+    DEFINES += MACHINE_TUNA MACHINE_PUBLIC_QUIRKS
+    TARGET_TYPE = TARGET_DEVICE
+    SOURCES += SoundPlayerDummy.cpp
+    HEADERS += SoundPlayerDummy.h
+    LIBS += -lqpalm
 }
 
 DEFINES += $$TARGET_TYPE HAVE_LUNA_PREF=1 PALM_DEVICE QT_PLUGIN QT_STATICPLUGIN
@@ -132,7 +139,11 @@ INCLUDEPATH += \
 
 contains(TARGET_TYPE, TARGET_DEVICE) {
         INCLUDEPATH +=  $$(STAGING_INCDIR)/hid/IncsPublic
-        SOURCES += SoundPlayer.cpp
-        HEADERS += SoundPlayer.h
-        LIBS += -lmedia-api  -lserviceinstall -laffinity -lhid -lmemchute
+        contains(MACHINE_NAME, "tuna") {
+        }
+        else {
+            SOURCES += SoundPlayer.cpp
+            HEADERS += SoundPlayer.h
+            LIBS += -lmedia-api  -lserviceinstall -laffinity -lhid -lmemchute
+        }
 }
